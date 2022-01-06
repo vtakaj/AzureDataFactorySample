@@ -57,7 +57,23 @@
 				},
 				"annotations": [],
 				"type": "CosmosDbSqlApiCollection",
-				"schema": {},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "string"
+						},
+						"country": {
+							"type": "string"
+						},
+						"name": {
+							"type": "string"
+						},
+						"age": {
+							"type": "integer"
+						}
+					}
+				},
 				"typeProperties": {
 					"collectionName": "users"
 				}
@@ -136,7 +152,7 @@
 						}
 					],
 					"transformations": [],
-					"script": "source(output(\n\t\tid as string,\n\t\tname as string,\n\t\tage as integer,\n\t\tcountry as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'document',\n\tmapColumn(\n\t\tid,\n\t\tname,\n\t\tage,\n\t\tcountry\n\t)) ~> sink1"
+					"script": "source(output(\n\t\tid as string,\n\t\tname as string,\n\t\tage as integer,\n\t\tcountry as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: true,\n\tinput(\n\t\tid as string,\n\t\tcountry as string,\n\t\tname as string,\n\t\tage as integer\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'document',\n\tpartitionKey: ['/country'],\n\tmapColumn(\n\t\tid,\n\t\tname,\n\t\tage,\n\t\tcountry\n\t)) ~> sink1"
 				}
 			},
 			"dependsOn": [
